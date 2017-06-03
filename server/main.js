@@ -169,8 +169,12 @@ Meteor.publish('tabular_getInfo', function (tableName, selector, sort, skip, lim
     },
     removed: function (id) {
       //console.log('REMOVED');
-      // _.findWhere is used to support Mongo ObjectIDs
-      filteredRecordIds = _.without(filteredRecordIds, _.findWhere(filteredRecordIds, id));
+      if (_.isString(id)) {
+        filteredRecordIds = _.without(filteredRecordIds, id);
+      } else {
+        // _.findWhere is used to support Mongo ObjectIDs
+        filteredRecordIds = _.without(filteredRecordIds, _.findWhere(filteredRecordIds, id));
+      }
       updateRecords();
     }
   });
