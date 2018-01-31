@@ -198,12 +198,11 @@ Template.tabular.onRendered(function () {
     // Always update the selector reactively
     template.tabular.selector = data.selector;
 
-    if (_.isFunction(data.sort)) {
-      const customSort = data.sort()
+    if (_.isArray(data.sort)) {
       const sort = Tracker.nonreactive(_ => template.tabular.sort.get());
       template.tabular.sort.set([
-        ..._.isArray(sort) ? sort : [],
-        ..._.isArray(customSort) ? customSort : []
+        ...data.sort,
+        ..._.isArray(sort) ? sort : []
       ]);
     }
 
