@@ -41,6 +41,12 @@ Tabular.Table = class {
       this.extraFields = fields;
     }
 
+    if (_.isArray(options.extraSort)) {
+      this.extraSort = _.reduce(options.extraSort, (memo, val) => {
+        return _.extend(memo, val)
+      }, {})
+    }
+
     this.selector = options.selector;
 
     this.options = _.omit(
@@ -57,7 +63,8 @@ Tabular.Table = class {
       'alternativeCount',
       'skipCount',
       'name',
-      'selector'
+      'selector',
+      'extraSort'
     );
 
     Tabular.tablesByName[this.name] = this;
