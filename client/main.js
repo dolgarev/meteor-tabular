@@ -39,7 +39,7 @@ Template.tabular.helpers({
   atts() {
     // We remove the "table" and "selector" attributes and assume the rest belong
     // on the <table> element
-    return _.omit(this, 'table', 'selector');
+    return _.omit(this, 'table', 'selector', 'sort');
   }
 });
 
@@ -106,7 +106,10 @@ Template.tabular.onRendered(function () {
       }
 
       // Update sort
-      template.tabular.sort.set(getMongoSort(data.order, options.columns));
+      template.tabular.sort.set([
+        ...template.tabular._customSort || [],
+        ...getMongoSort(data.order, options.columns)
+      ]);
 
       // Update pubSelector
       const pubSelector = getPubSelector(
@@ -197,14 +200,7 @@ Template.tabular.onRendered(function () {
 
     // Always update the selector reactively
     template.tabular.selector = data.selector;
-
-    if (_.isArray(data.sort)) {
-      const sort = Tracker.nonreactive(_ => template.tabular.sort.get());
-      template.tabular.sort.set([
-        ...data.sort,
-        ..._.isArray(sort) ? sort : []
-      ]);
-    }
+    template.tabular._customSort = _.isArray(data.sort) ? data.sort : [];
 
     // The remaining stuff relates to changing the `table`
     // attribute. If we didn't change it, we can stop here,
