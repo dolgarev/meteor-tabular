@@ -198,6 +198,15 @@ Template.tabular.onRendered(function () {
     // Always update the selector reactively
     template.tabular.selector = data.selector;
 
+    if (_.isFunction(data.sort)) {
+      const customSort = data.sort()
+      const sort = Tracker.nonreactive(_ => template.tabular.sort.get());
+      template.tabular.sort.set([
+        ..._.isArray(sort) ? sort : [],
+        ..._.isArray(customSort) ? customSort : []
+      ]);
+    }
+
     // The remaining stuff relates to changing the `table`
     // attribute. If we didn't change it, we can stop here,
     // but we need to reload the table if this is not the first
